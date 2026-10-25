@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Web/build artifacts
+node_modules/
+coverage/
+*.log
+*.bak-*
+
+# Runtime secrets and host-specific configuration
+.env
+.env.*
+!.env.example
+web/config.php
+collector/config.yaml
+
+# Data dumps / snapshots (keep versioned migrations)
+database/dumps/
+database/schema_*.sql
+
+# Sensitive data
+*SSN*
+*HIPAA*

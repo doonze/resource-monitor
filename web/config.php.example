@@ -1,0 +1,38 @@
+<?php
+/**
+ * Resource Monitor - Database Configuration
+ * 
+ * Copy this file from config.php.example and update with your settings
+ */
+
+// Database connection settings
+define('DB_HOST', 'localhost');
+define('DB_PORT', 3306);
+define('DB_NAME', 'resource_monitor');
+define('DB_USER', 'resmon_web');
+define('DB_PASS', 'YourWebPassword456!');
+define('DB_CHARSET', 'utf8mb4');
+
+// Application settings
+define('APP_NAME', 'Resource Monitor');
+define('APP_VERSION', '1.0.0');
+define('TIMEZONE', 'America/Chicago');  // Adjust to your timezone
+
+// Update intervals (milliseconds)
+define('LIVE_UPDATE_INTERVAL', 5000);   // 5 seconds
+define('CHART_UPDATE_INTERVAL', 30000); // 30 seconds
+
+// Default chart time ranges
+define('DEFAULT_TIME_RANGE', '1h');     // 1 hour
+
+// Session settings
+define('SESSION_TIMEOUT', 7200);        // 2 hours
+
+// Security
+define('ENABLE_AUTH', false);           // Set to true to require login (future feature)
+
+// Debug mode (set to false in production)
+define('DEBUG_MODE', false);
+
+// Set timezone
+date_default_timezone_set(TIMEZONE);

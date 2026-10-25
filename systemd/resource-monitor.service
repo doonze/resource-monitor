@@ -1,0 +1,27 @@
+[Unit]
+Description=Resource Monitor Data Collector
+After=network.target mariadb.service
+Wants=mariadb.service
+
+[Service]
+Type=simple
+User=resmon
+Group=resmon
+WorkingDirectory=/opt/resource-monitor/collector
+ExecStart=/usr/bin/python3 /opt/resource-monitor/collector/collector.py
+Restart=always
+RestartSec=10
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/resource-monitor
+
+# Resource limits
+MemoryLimit=512M
+CPUQuota=25%
+
+[Install]
+WantedBy=multi-user.target
