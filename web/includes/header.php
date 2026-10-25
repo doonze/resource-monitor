@@ -13,6 +13,7 @@ $theme = getTheme();
     
     <!-- Tailwind CSS (Production Build) -->
     <link rel="stylesheet" href="assets/tailwind.css?v=<?php echo filemtime(__DIR__ . '/../public/assets/tailwind.css'); ?>">
+    <link rel="stylesheet" href="assets/chart-controls.css?v=<?php echo filemtime(__DIR__ . '/../public/assets/chart-controls.css'); ?>">
     
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
@@ -24,8 +25,11 @@ $theme = getTheme();
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>
     
-    <!-- Chart.js -->
+    <!-- Chart.js + drag-zoom controls -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="assets/chart-controls.js?v=<?php echo filemtime(__DIR__ . '/../public/assets/chart-controls.js'); ?>"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
     

@@ -692,20 +692,21 @@ function processExplorer() {
                 </div>
                 <span class="text-xs text-gray-400 flex-shrink-0" x-text="procPoints.length + ' data points'"></span>
             </div>
+            <p class="mb-4 text-xs text-gray-400 dark:text-gray-500">Drag across a chart to zoom; reset returns to the full process-history range.</p>
             <!-- CPU chart -->
-            <div class="mb-6">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">CPU Usage (%)</p>
-                <div style="height: 180px;"><canvas id="procCpuChart"></canvas></div>
+            <div class="rm-chart-card mb-6">
+                <div class="mb-2 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0">CPU Usage (%)</p><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('procCpuChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'procCpuChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+                <div class="rm-chart-area" style="height: 180px;"><canvas id="procCpuChart"></canvas></div>
             </div>
             <!-- Memory chart -->
-            <div class="mb-6">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Memory Usage (MB)</p>
-                <div style="height: 180px;"><canvas id="procMemChart"></canvas></div>
+            <div class="rm-chart-card mb-6">
+                <div class="mb-2 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0">Memory Usage (MB)</p><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('procMemChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'procMemChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+                <div class="rm-chart-area" style="height: 180px;"><canvas id="procMemChart"></canvas></div>
             </div>
             <!-- TCP Connections chart -->
-            <div x-show="procPoints.some(p => p.tcp_conns_avg != null)">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">TCP Connections (established)</p>
-                <div style="height: 180px;"><canvas id="procTcpChart"></canvas></div>
+            <div x-show="procPoints.some(p => p.tcp_conns_avg != null)" class="rm-chart-card">
+                <div class="mb-2 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0">TCP Connections (established)</p><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('procTcpChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'procTcpChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+                <div class="rm-chart-area" style="height: 180px;"><canvas id="procTcpChart"></canvas></div>
             </div>
         </div>
     </div>
@@ -754,9 +755,6 @@ function processHistory() {
         namesLoaded: false,
 
         // Chart instances
-        cpuChart: null,
-        memChart: null,
-        tcpChart: null,
 
         init() {
             const params = new URLSearchParams(window.location.search);
@@ -963,12 +961,7 @@ function processHistory() {
                 },
             };
 
-            // Destroy old charts before re-rendering
-            if (this.cpuChart) { this.cpuChart.destroy(); this.cpuChart = null; }
-            if (this.memChart) { this.memChart.destroy(); this.memChart = null; }
-            if (this.tcpChart) { this.tcpChart.destroy(); this.tcpChart = null; }
-
-            this.cpuChart = new Chart(document.getElementById('procCpuChart'), {
+            window.resourceMonitorUpsertChart('process-cpu', document.getElementById('procCpuChart'), {
                 type: 'line',
                 data: {
                     labels,
@@ -980,7 +973,7 @@ function processHistory() {
                 options: { ...baseOpts, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, suggestedMax: 10 } } },
             });
 
-            this.memChart = new Chart(document.getElementById('procMemChart'), {
+            window.resourceMonitorUpsertChart('process-memory', document.getElementById('procMemChart'), {
            type: 'line',
                 data: {
                     labels,
@@ -993,7 +986,7 @@ function processHistory() {
             });
 
             if (hasTcp) {
-                this.tcpChart = new Chart(document.getElementById('procTcpChart'), {
+                window.resourceMonitorUpsertChart('process-tcp', document.getElementById('procTcpChart'), {
                     type: 'line',
                     data: {
                         labels,
@@ -1003,6 +996,8 @@ function processHistory() {
                     },
                     options: { ...baseOpts, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, suggestedMax: 5, ticks: { ...baseOpts.scales.y.ticks, precision: 0 } } } },
                 });
+            } else {
+                window.resourceMonitorDestroyChart('process-tcp');
             }
         },
 

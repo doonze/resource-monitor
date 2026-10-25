@@ -13,6 +13,6 @@ The workspace `collector/` path is a symlink to the live `/opt/resource-monitor/
 
 ## GPU Telemetry Status
 
-The collector records Tesla P4 utilization, memory, temperature, and power into the v005 GPU tables. The deployed GPU page auto-refreshes live readings every 10 seconds and history charts every minute; charts cover utilization, VRAM, temperature, and power draw. Temperatures display in Fahrenheit (stored in Celsius), and there is no manual refresh button. History charts support x-axis drag-to-zoom with reset controls and a full-viewport view; refreshes update existing chart instances. The year-scale chart fills after hourly GPU rollups accumulate.
+The collector records Tesla P4 utilization, memory, temperature, and power into the v005 GPU tables. The deployed GPU page auto-refreshes live readings every 10 seconds and history charts every minute; charts cover utilization, VRAM, temperature, and power draw. Temperatures display in Fahrenheit (stored in Celsius), and there is no manual refresh button. History charts support x-axis drag-to-zoom with reset controls and a full-viewport view; refreshes update existing chart instances. The History and Process History pages now use the same controls; the 2026-10-25 deployment also added four GPU history charts to History. The year-scale chart fills after hourly GPU rollups accumulate.
 
 See `PROJECT_CONTEXT.md` for paths, constraints, and known operational details.

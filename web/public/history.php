@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 <div x-data="historyDashboard()" x-init="init()">
@@ -101,81 +100,104 @@ require_once __DIR__ . '/../includes/header.php';
         </svg>
     </div>
     
+    <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Drag across a chart to zoom the time axis. Reset zoom restores the selected range.</p>
+
     <!-- Charts Grid -->
     <div x-show="!loading" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <!-- CPU Usage Chart -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">CPU Usage</h3>
-            <div class="h-64">
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">CPU Usage</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('cpuChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'cpuChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Full screen</button></div>
+            </div>
+            <div class="rm-chart-area h-64">
                 <canvas id="cpuChart"></canvas>
             </div>
         </div>
         
         <!-- Memory Usage Chart -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Memory Usage</h3>
-            <div class="h-64">
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">Memory Usage</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('memoryChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'memoryChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Full screen</button></div>
+            </div>
+            <div class="rm-chart-area h-64">
                 <canvas id="memoryChart"></canvas>
             </div>
         </div>
         
         <!-- Disk I/O Chart -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Disk I/O</h3>
-            <div class="h-64">
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">Disk I/O</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('diskChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'diskChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Full screen</button></div>
+            </div>
+            <div class="rm-chart-area h-64">
                 <canvas id="diskChart"></canvas>
             </div>
         </div>
         
         <!-- Network I/O Chart -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Network I/O</h3>
-            <div class="h-64">
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">Network I/O</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('networkChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'networkChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Full screen</button></div>
+            </div>
+            <div class="rm-chart-area h-64">
                 <canvas id="networkChart"></canvas>
             </div>
         </div>
         
         <!-- Temperature Chart -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">CPU Temperature</h3>
-            <div class="h-64">
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">CPU Temperature</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('tempChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'tempChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Full screen</button></div>
+            </div>
+            <div class="rm-chart-area h-64">
                 <canvas id="tempChart"></canvas>
             </div>
         </div>
 
         <!-- GPU Charts -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">GPU Utilization (%)</h3>
-            <div class="h-64"><canvas id="gpuUtilizationChart"></canvas></div>
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2"><h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">GPU Utilization (%)</h3><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('gpuUtilizationChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'gpuUtilizationChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+            <div class="rm-chart-area h-64"><canvas id="gpuUtilizationChart"></canvas></div>
         </div>
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">GPU Memory (MiB)</h3>
-            <div class="h-64"><canvas id="gpuMemoryChart"></canvas></div>
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2"><h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">GPU Memory (MiB)</h3><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('gpuMemoryChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'gpuMemoryChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+            <div class="rm-chart-area h-64"><canvas id="gpuMemoryChart"></canvas></div>
         </div>
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">GPU Temperature (°C)</h3>
-            <div class="h-64"><canvas id="gpuTemperatureChart"></canvas></div>
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2"><h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">GPU Temperature (°C)</h3><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('gpuTemperatureChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'gpuTemperatureChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+            <div class="rm-chart-area h-64"><canvas id="gpuTemperatureChart"></canvas></div>
         </div>
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">GPU Power (W)</h3>
-            <div class="h-64"><canvas id="gpuPowerChart"></canvas></div>
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2"><h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">GPU Power (W)</h3><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('gpuPowerChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'gpuPowerChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+            <div class="rm-chart-area h-64"><canvas id="gpuPowerChart"></canvas></div>
         </div>
 
         <!-- TCP Connections Chart -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">TCP Connections</h3>
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">TCP Connections</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('connectionsChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'connectionsChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div>
+            </div>
             <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Active established TCP connections system-wide. Compare with Network I/O to check correlation.</p>
-            <div class="h-64">
+            <div class="rm-chart-area h-64">
                 <canvas id="connectionsChart"></canvas>
             </div>
         </div>
 
         <!-- Overview / Correlation Chart — full width -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 lg:col-span-2">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">Overview</h3>
+        <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6 lg:col-span-2">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">Overview</h3>
+                <div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('overviewChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'overviewChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div>
+            </div>
             <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">CPU &amp; Memory: actual&nbsp;%. &nbsp;Disk, Network &amp; TCP Conn: % of window peak. &nbsp;Temp: % of 30&ndash;100&deg;C range.</p>
-            <div class="h-64">
+            <div class="rm-chart-area h-64">
                 <canvas id="overviewChart"></canvas>
             </div>
         </div>
@@ -194,7 +216,6 @@ function historyDashboard() {
     return {
         range: '<?php echo DEFAULT_TIME_RANGE; ?>',
         loading: true,
-        charts: {},
         tempUnit: localStorage.getItem('tempUnit') || 'F',
         autoRefresh:      false,
         refreshCountdown: 60,
@@ -318,6 +339,7 @@ function historyDashboard() {
                 // Clicking any point navigates to Process History > Time View
                 // pre-loaded at that exact timestamp.
                 onClick: (event, elements, chart) => {
+                    if (Date.now() < (chart.$resourceMonitorIgnoreClickUntil || 0)) return;
                     if (!elements.length) return;
                     const idx = elements[0].index;
 
@@ -384,16 +406,7 @@ function historyDashboard() {
             const cpuCanvas = document.getElementById('cpuChart');
             console.log('CPU canvas:', cpuCanvas, 'width:', cpuCanvas?.offsetWidth);
             if (cpuCanvas && cpuCanvas.offsetWidth > 0) {
-                if (this.charts.cpu) {
-                    try {
-                        this.charts.cpu.stop(); // Stop animations first
-                        this.charts.cpu.destroy();
-                    } catch (e) {
-                        console.warn('Error destroying cpu chart:', e);
-                    }
-                    this.charts.cpu = null;
-                }
-                this.charts.cpu = new Chart(cpuCanvas, {
+                window.resourceMonitorUpsertChart('history-cpu', cpuCanvas, {
                 type: 'line',
                 data: {
                     labels: data.timestamps,
@@ -443,16 +456,7 @@ function historyDashboard() {
             // Memory Chart
             const memoryCanvas = document.getElementById('memoryChart');
             if (memoryCanvas && memoryCanvas.offsetWidth > 0) {
-                if (this.charts.memory) {
-                    try {
-                        this.charts.memory.stop();
-                        this.charts.memory.destroy();
-                    } catch (e) {
-                        console.warn('Error destroying memory chart:', e);
-                    }
-                    this.charts.memory = null;
-                }
-                this.charts.memory = new Chart(memoryCanvas, {
+                window.resourceMonitorUpsertChart('history-memory', memoryCanvas, {
                 type: 'line',
                 data: {
                     labels: data.timestamps,
@@ -502,16 +506,7 @@ function historyDashboard() {
             // Disk I/O Chart
             const diskCanvas = document.getElementById('diskChart');
             if (diskCanvas && diskCanvas.offsetWidth > 0) {
-                if (this.charts.disk) {
-                    try {
-                        this.charts.disk.stop();
-                        this.charts.disk.destroy();
-                    } catch (e) {
-                        console.warn('Error destroying disk chart:', e);
-                    }
-                    this.charts.disk = null;
-                }
-                this.charts.disk = new Chart(diskCanvas, {
+                window.resourceMonitorUpsertChart('history-disk', diskCanvas, {
                 type: 'line',
                 data: {
                     labels: data.timestamps,
@@ -560,16 +555,7 @@ function historyDashboard() {
             // Network I/O Chart
             const networkCanvas = document.getElementById('networkChart');
             if (networkCanvas && networkCanvas.offsetWidth > 0) {
-                if (this.charts.network) {
-                    try {
-                        this.charts.network.stop();
-                        this.charts.network.destroy();
-                    } catch (e) {
-                        console.warn('Error destroying network chart:', e);
-                    }
-                    this.charts.network = null;
-                }
-                this.charts.network = new Chart(networkCanvas, {
+                window.resourceMonitorUpsertChart('history-network', networkCanvas, {
                 type: 'line',
                 data: {
                     labels: data.timestamps,
@@ -639,14 +625,6 @@ function historyDashboard() {
             if (data.temperature && data.temperature.sensors) {
                 const tempCanvas = document.getElementById('tempChart');
                 if (tempCanvas && tempCanvas.offsetWidth > 0) {
-                    if (this.charts.temp) {
-                        try {
-                            this.charts.temp.stop();
-                            this.charts.temp.destroy();
-                        } catch (e) { console.warn('Error destroying temp chart:', e); }
-                        this.charts.temp = null;
-                    }
-
                     const sensors = data.temperature.sensors;
                     const keys    = Object.keys(sensors);
 
@@ -675,7 +653,7 @@ function historyDashboard() {
                         });
 
                         const unit = this.tempUnit;
-                        this.charts.temp = new Chart(tempCanvas, {
+                        window.resourceMonitorUpsertChart('history-temperature', tempCanvas, {
                             type: 'line',
                             data: {
                                 datasets: [
@@ -724,14 +702,7 @@ function historyDashboard() {
             // TCP Connections Chart
             const connectionsCanvas = document.getElementById('connectionsChart');
             if (connectionsCanvas && connectionsCanvas.offsetWidth > 0 && data.connections) {
-                if (this.charts.connections) {
-                    try {
-                        this.charts.connections.stop();
-                        this.charts.connections.destroy();
-                    } catch (e) { console.warn('Error destroying connections chart:', e); }
-                    this.charts.connections = null;
-                }
-                this.charts.connections = new Chart(connectionsCanvas, {
+                window.resourceMonitorUpsertChart('history-connections', connectionsCanvas, {
                     type: 'line',
                     data: {
                         labels: data.timestamps,
@@ -797,10 +768,6 @@ function historyDashboard() {
             for (const spec of gpuChartSpecs) {
                 const canvas = document.getElementById(spec.canvas);
                 if (!canvas || canvas.offsetWidth === 0) continue;
-                if (this.charts[spec.key]) {
-                    this.charts[spec.key].destroy();
-                    this.charts[spec.key] = null;
-                }
                 const labels = gpuDevices.length ? gpuDevices[0].timestamps : [];
                 const datasets = gpuDevices.map((gpu, index) => ({
                     label: `${gpu.name} (${gpu.id}) ${spec.label}`,
@@ -814,7 +781,7 @@ function historyDashboard() {
                     pointHoverRadius: 4,
                     spanGaps: true,
                 }));
-                this.charts[spec.key] = new Chart(canvas, {
+                window.resourceMonitorUpsertChart(`history-${spec.key}`, canvas, {
                     type: 'line',
                     data: { labels, datasets },
                     options: {
@@ -839,14 +806,6 @@ function historyDashboard() {
             // Colors intentionally match their individual chart counterparts.
             const overviewCanvas = document.getElementById('overviewChart');
             if (overviewCanvas && overviewCanvas.offsetWidth > 0) {
-                if (this.charts.overview) {
-                    try {
-                        this.charts.overview.stop();
-                        this.charts.overview.destroy();
-                    } catch(e) { console.warn('Error destroying overview chart:', e); }
-                    this.charts.overview = null;
-                }
-
                 // Normalize an array to 0-100% of its own peak value.
                 // Returns 0 for every point if peak is 0 (avoids divide-by-zero).
                 const normPeak = (arr) => {
@@ -947,7 +906,7 @@ function historyDashboard() {
                 }
 
                 const overviewUnit = this.tempUnit;
-                this.charts.overview = new Chart(overviewCanvas, {
+                window.resourceMonitorUpsertChart('history-overview', overviewCanvas, {
                     type: 'line',
                     data: { datasets: overviewDatasets },
                     options: {

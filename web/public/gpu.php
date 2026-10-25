@@ -170,14 +170,10 @@ require_once __DIR__ . '/../includes/header.php';
     </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
 <script>
-if (window.Chart && window.ChartZoom) {
-    window.Chart.register(window.ChartZoom);
-}
-
 function gpuMonitor() {
+    // Keep Chart.js instances outside Alpine's reactive proxy graph.
+    const charts = {};
     return {
         devices: [],
         historyDevices: [],
@@ -190,7 +186,6 @@ function gpuMonitor() {
         historyUpdatedAt: '',
         refreshTimer: null,
         historyTimer: null,
-        charts: {},
         fullscreenChart: null,
 
         init() {
@@ -201,14 +196,14 @@ function gpuMonitor() {
         },
 
         resetZoom(key) {
-            const chart = this.charts[key];
+            const chart = charts[key];
             if (chart && typeof chart.resetZoom === 'function') chart.resetZoom();
         },
 
         toggleFullscreen(canvasId) {
             this.fullscreenChart = this.fullscreenChart === canvasId ? null : canvasId;
             this.$nextTick(() => {
-                requestAnimationFrame(() => Object.values(this.charts).forEach((chart) => chart.resize()));
+                requestAnimationFrame(() => Object.values(charts).forEach((chart) => chart.resize()));
             });
         },
 
@@ -216,7 +211,7 @@ function gpuMonitor() {
             if (!this.fullscreenChart) return;
             this.fullscreenChart = null;
             this.$nextTick(() => {
-                requestAnimationFrame(() => Object.values(this.charts).forEach((chart) => chart.resize()));
+                requestAnimationFrame(() => Object.values(charts).forEach((chart) => chart.resize()));
             });
         },
 
@@ -279,7 +274,7 @@ function gpuMonitor() {
 
         renderCharts() {
             const devices = this.historyDevices;
-            const labels = devices.length ? (devices[0].timestamps || []) : [];
+            const labels = devices.length ? Array.from(devices[0].timestamps || []) : [];
             const dark = document.documentElement.classList.contains('dark');
             const textColor = dark ? '#d1d5db' : '#4b5563';
             const gridColor = dark ? 'rgba(156, 163, 175, 0.18)' : 'rgba(156, 163, 175, 0.24)';
@@ -309,10 +304,10 @@ function gpuMonitor() {
             specs.forEach((spec) => {
                 const canvas = document.getElementById(spec.canvas);
                 if (!canvas || !window.Chart) return;
-                const previousChart = this.charts[spec.key];
+                const previousChart = charts[spec.key];
                 if (previousChart && previousChart.canvas !== canvas) {
                     previousChart.destroy();
-                    delete this.charts[spec.key];
+                    delete charts[spec.key];
                 }
 
                 const datasets = devices.map((gpu, index) => ({
@@ -366,13 +361,13 @@ function gpuMonitor() {
                     },
                 };
 
-                const chart = this.charts[spec.key];
+                const chart = charts[spec.key];
                 if (chart) {
                     chart.data = config.data;
                     chart.options = config.options;
                     chart.update('none');
                 } else {
-                    this.charts[spec.key] = new Chart(canvas, config);
+                    charts[spec.key] = new Chart(canvas, config);
                 }
             });
         },
@@ -380,7 +375,7 @@ function gpuMonitor() {
         destroy() {
             if (this.refreshTimer) clearInterval(this.refreshTimer);
             if (this.historyTimer) clearInterval(this.historyTimer);
-            Object.values(this.charts).forEach((chart) => chart.destroy());
+            Object.values(charts).forEach((chart) => chart.destroy());
         },
     };
 }

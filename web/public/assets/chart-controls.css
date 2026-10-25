@@ -1,0 +1,32 @@
+.rm-chart-card--fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 80;
+    display: flex !important;
+    flex-direction: column;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 1.5rem;
+    overflow: auto;
+    border-radius: 0 !important;
+    background: #fff;
+}
+
+.dark .rm-chart-card--fullscreen {
+    background: #1f2937;
+}
+
+.rm-chart-card--fullscreen .rm-chart-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto !important;
+    max-height: none !important;
+}
+
+@supports (height: 100dvh) {
+    .rm-chart-card--fullscreen {
+        height: 100dvh !important;
+    }
+}
