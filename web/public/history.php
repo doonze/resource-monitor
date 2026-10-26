@@ -170,7 +170,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="rm-chart-area h-64"><canvas id="gpuMemoryChart"></canvas></div>
         </div>
         <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div class="mb-4 flex flex-wrap items-start justify-between gap-2"><h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0">GPU Temperature (°C)</h3><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('gpuTemperatureChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'gpuTemperatureChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-2"><h3 class="text-lg font-medium text-gray-900 dark:text-white mb-0" x-text="'GPU Temperature (°' + tempUnit + ')'">GPU Temperature (°F)</h3><div class="flex shrink-0 gap-2"><button type="button" onclick="resetChartZoom('gpuTemperatureChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Reset zoom</button><button type="button" data-chart-fullscreen aria-pressed="false" onclick="toggleChartFullscreen(this, 'gpuTemperatureChart')" class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 dark:border-gray-600 dark:text-gray-200">Full screen</button></div></div>
             <div class="rm-chart-area h-64"><canvas id="gpuTemperatureChart"></canvas></div>
         </div>
         <div class="rm-chart-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
@@ -762,7 +762,7 @@ function historyDashboard() {
             const gpuChartSpecs = [
                 { key: 'gpuUtilization', canvas: 'gpuUtilizationChart', field: 'utilization', label: 'Utilization', max: 100, unit: '%' },
                 { key: 'gpuMemory', canvas: 'gpuMemoryChart', field: 'memory_used_mb', label: 'Memory used', max: null, unit: 'MiB' },
-                { key: 'gpuTemperature', canvas: 'gpuTemperatureChart', field: 'temperature_celsius', label: 'Temperature', max: null, unit: '°C' },
+                { key: 'gpuTemperature', canvas: 'gpuTemperatureChart', field: 'temperature_celsius', label: 'Temperature', max: null, unit: '°' + this.tempUnit },
                 { key: 'gpuPower', canvas: 'gpuPowerChart', field: 'power_watts', label: 'Power', max: null, unit: 'W' },
             ];
             for (const spec of gpuChartSpecs) {
@@ -771,7 +771,9 @@ function historyDashboard() {
                 const labels = gpuDevices.length ? gpuDevices[0].timestamps : [];
                 const datasets = gpuDevices.map((gpu, index) => ({
                     label: `${gpu.name} (${gpu.id}) ${spec.label}`,
-                    data: gpu[spec.field] || [],
+                    data: spec.key === 'gpuTemperature' && this.tempUnit === 'F'
+                        ? (gpu[spec.field] || []).map(value => value == null ? null : this.convertTemp(value))
+                        : (gpu[spec.field] || []),
                     borderColor: gpuPalette[index % gpuPalette.length],
                     backgroundColor: 'transparent',
                     fill: false,
