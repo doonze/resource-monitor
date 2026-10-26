@@ -317,10 +317,11 @@ function gpuMonitor() {
                         : (gpu[spec.field] || []),
                     borderColor: palette[index % palette.length],
                     backgroundColor: 'transparent',
+                    fill: false,
+                    tension: 0.35,
                     borderWidth: 2,
-                    pointRadius: 2.5,
-                    pointHoverRadius: 5,
-                    tension: 0.3,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
                     spanGaps: true,
                 }));
 
