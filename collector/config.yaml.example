@@ -1,0 +1,72 @@
+# Resource Monitor Collector Configuration
+
+# Database connection
+database:
+  host: localhost
+  unix_socket: /var/run/mysqld/mysqld.sock
+  port: 3306
+  database: resource_monitor
+  user: resmon_collector
+  password: CHANGE_ME_SecurePassword123!
+  charset: utf8mb4
+
+# Collection settings
+collection:
+  interval_seconds: 5           # How often to collect metrics
+  disk_usage_interval: 30       # Disk usage collected less frequently (seconds)
+  top_processes_count: 10       # Number shown on main dashboard (top 10 CPU)
+                                # Note: Collector saves top 50 CPU + top 50 memory for processes page
+  
+# Disk usage filtering
+disk_usage_filter:
+  # Blacklist: Skip mount points matching these patterns (supports wildcards)
+  blacklist:
+    - '/snap/*'                  # Skip all snap mounts
+    - '/var/lib/docker/*'        # Skip docker overlay mounts
+    - '/run/user/*'              # Skip user runtime mounts
+    - '/dev/loop*'               # Skip loop devices
+    - '/sys/*'                   # Skip system pseudo-filesystems
+    - '/proc/*'                  # Skip proc pseudo-filesystems
+  
+  # Whitelist: Always include these mount points (overrides blacklist)
+  whitelist:
+    - '/'                        # Root filesystem
+    - '/boot'                    # Boot partition
+    - '/boot/efi'                # EFI partition
+    - '/home'                    # Home partition (if separate)
+  
+  # Custom paths: Additional paths to monitor (e.g., network mounts)
+  # These will be added even if not in psutil.disk_partitions()
+  custom_paths:
+    # - '/mnt/nas'               # Example: Network mount
+    # - '/media/backup'          # Example: External drive
+  
+# Data retention (handled by database cleanup procedures)
+retention:
+  samples_hours: 24            # Keep 5-second samples for 24 hours
+  aggregated_1min_days: 7      # Keep 1-minute aggregates for 7 days
+  aggregated_5min_days: 30     # Keep 5-minute aggregates for 30 days
+  aggregated_1hour_days: 365   # Keep 1-hour aggregates for 1 year
+
+# System identification
+system:
+  hostname: localhost              # 'auto' to use system hostname, or specify custom name
+  
+# Logging
+logging:
+  level: INFO                  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: /var/log/resource-monitor/collector.log
+  max_bytes: 10485760          # 10MB
+  backup_count: 5
+  
+# Metrics to collect (set to false to disable)
+metrics:
+  cpu: true
+  memory: true
+  disk_io: true
+  disk_usage: true
+  network: true
+  processes: true
+  temperatures: true
+  gpu: true
+  connections: true
